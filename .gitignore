@@ -1,0 +1,9 @@
+.metadata
+.gradle/
+*/.settings
+*/bin
+*/bin_test
+*/generated
+build/
+.idea/*
+*.iml

@@ -1,0 +1,13 @@
+== How to use
+
+When at least one BlobStoreService is configured it can be used. The following example uses the BlobStoreService to list files in the Blob Store. As you can see the BlobStoreService just gives you a BlobStoreContext which is the jclouds API.
+
+[source,java,tabsize=4]
+----
+BlobStoreContext context = instance.getContext();
+PageSet<? extends StorageMetadata> list = context.getBlobStore().list();
+for (StorageMetadata storageMetadata : list) {
+	System.out.println(storageMetadata.getName());
+}
+----
+

@@ -1,0 +1,6 @@
+== Introduction
+
+Blob Stores are used to store (large) files in the cloud.
+Amdatu Blob Stores is based on the jclouds library that supports Blob Stores from several cloud providers such as Amazon S3 and Microsoft Azure.
+The Blob Stores component makes the jclouds API available as OSGi service using a Managed Service Factory.
+This way you can use Configuration Admin to configure Blob Stores while using the jclouds API to use the Blob Stores from code.

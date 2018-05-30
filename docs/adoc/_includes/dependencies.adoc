@@ -1,0 +1,14 @@
+== Dependencies
+
+[cols="40%,10%,50%"]
+|===
+|Dependency
+	| Required
+	| Description
+| org.apache.felix.dependencymanager
+	| yes
+	| Apache Felix Dependency Manager is used internally by all Amdatu components
+| Implementation of Config Admin (e.g. org.apache.felix.configadmin)
+	| yes
+	| Used to configure data sources
+|===

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<repository increment="1527666924000" name="Release" xmlns="http://www.osgi.org/xmlns/repository/v1.0.0">
+  <resource>
+    <capability namespace="osgi.identity">
+      <attribute name="osgi.identity" value="org.tako.libraries.dependencies"/>
+      <attribute name="type" value="osgi.bundle"/>
+      <attribute name="version" type="Version" value="1.0.0.201805300748"/>
+    </capability>
+    <capability namespace="osgi.content">
+      <attribute name="osgi.content" value="4b9691ef4e82f90787413cc27de660c63bee8dda4762a1c04cc4ef882e0be7eb"/>
+      <attribute name="url" value="org.tako.libraries.dependencies/org.tako.libraries.dependencies-1.0.0.jar"/>
+      <attribute name="size" type="Long" value="467"/>
+      <attribute name="mime" value="application/vnd.osgi.bundle"/>
+    </capability>
+    <capability namespace="osgi.wiring.bundle">
+      <attribute name="osgi.wiring.bundle" value="org.tako.libraries.dependencies"/>
+      <attribute name="bundle-version" type="Version" value="1.0.0.201805300748"/>
+    </capability>
+    <capability namespace="osgi.wiring.host">
+      <attribute name="osgi.wiring.host" value="org.tako.libraries.dependencies"/>
+      <attribute name="bundle-version" type="Version" value="1.0.0.201805300748"/>
+    </capability>
+  </resource>
+</repository>

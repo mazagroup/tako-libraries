@@ -1,0 +1,6 @@
+Include-Resource: @jars/org.springframework.roo.wrapping.jline-1.0.S2-B.0013.jar
+-exportcontents:  jline	
+Export-Package: jline.*;version=1.0.S2-B.0013
+Bundle-Version: 1.0.S2-B.0013
+DynamicImport-Package: *
+Import-Package: javax.swing

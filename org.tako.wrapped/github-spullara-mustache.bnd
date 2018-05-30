@@ -1,0 +1,12 @@
+Include-Resource: @jars/compiler-0.8.18.jar
+-exportcontents:  com
+Export-Package: com.*;version=0.8.18
+Bundle-Version: 0.8.18
+Import-Package: \
+	!com.github.mustachejava.*,\
+	com.google.common.base,\
+	com.google.common.cache,\
+	com.google.common.io,\
+	com.google.common.util.concurrent,\
+	org.jruby;resolution=optional,\
+	org.jruby.embed;resolution=optional

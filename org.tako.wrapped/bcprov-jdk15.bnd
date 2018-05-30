@@ -1,0 +1,14 @@
+Include-Resource: @jars/org.springframework.roo.wrapping.bcprov-jdk15-1.45.010.jar
+-exportcontents:  org	
+Export-Package: org.*;version=1.45.010
+Bundle-Version: 1.45.010.${tstamp}
+Import-Package: javax.crypto,\
+	javax.crypto.interfaces,\
+	javax.crypto.spec,\
+	javax.naming,\
+	javax.naming.directory,\
+	javax.security.auth.x500,\
+	junit.framework;resolution:=optional;version="[3.8.2,4.0.0)",\
+	junit.textui;resolution:=optional;version="[3.8.2,4.0.0)"
+	
+	

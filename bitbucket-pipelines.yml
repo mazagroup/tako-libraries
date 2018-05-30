@@ -1,0 +1,31 @@
+image: amdatu/build-jdk8-alpine
+pipelines:
+  default:
+    - step:
+        caches:
+          - maven
+          - gradle
+          - jruby
+        script:
+          - bash ./gradlew build docs:asciidoctor -i
+  branches:
+    master:
+      - step:
+          caches:
+            - maven
+            - gradle
+            - jruby
+          script:
+            - bash ./gradlew build snapshot docs:asciidoctor s3SnapshotDeploy -i
+  tags:
+    r*:
+      - step:
+          caches:
+            - maven
+            - gradle
+            - jruby
+          script:
+            - bash ./gradlew build release docs:asciidoctor s3ReleaseDeploy -i
+definitions:
+  caches:
+    jruby: docs/build/gems

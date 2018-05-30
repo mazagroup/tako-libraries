@@ -1,0 +1,12 @@
+Include-Resource: @jars/ST4-4.0.8-complete.jar
+-exportcontents:  st4hidden,org
+Export-Package: st4hidden.*;version=4.0.8,org.*;version=4.0.8
+Bundle-Version: 4.0.8
+Import-Package: \
+	javax.swing;resolution=optional,\
+	javax.swing.border;resolution=optional,\
+	javax.swing.event;resolution=optional,\
+	javax.swing.text;resolution=optional,\
+	javax.swing.tree;resolution=optional,\
+	!org.stringtemplate.*,\
+	!st4hidden.*

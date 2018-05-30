@@ -1,0 +1,13 @@
+== Resources
+
+[cols="40%,60%"]
+|===
+|Tools
+	| Location
+|Source Code
+	| https://bitbucket.org/amdatu/amdatu-blobstores[^]
+|Issue Tracking
+	| https://amdatu.atlassian.net/browse/AMDATUSTORAGE[^]
+|Continuous Build
+	| https://bitbucket.org/amdatu/amdatu-blobstores/addon/pipelines/home[^]
+|===

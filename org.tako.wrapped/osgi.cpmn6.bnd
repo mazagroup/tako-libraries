@@ -1,0 +1,9 @@
+Include-Resource: @jars/org.apache.felix.scr-2.0.4.jar
+-exportcontents:  org.osgi
+Bundle-Version: 6.0.0.${tstamp}
+Export-Package: ,\
+	org.osgi.service.component;version="1.3";uses:="org.osgi.framework",\
+	org.osgi.service.component.runtime;version="1.3";uses:="org.osgi.framework,org.osgi.service.component.runtime.dto,org.osgi.util.promise",\
+	org.osgi.service.component.runtime.dto;version="1.3";uses:="org.osgi.dto,org.osgi.framework.dto",\
+	org.osgi.util.function;version="1.0",\
+	org.osgi.util.promise;version="1.0";uses:="org.osgi.util.function"

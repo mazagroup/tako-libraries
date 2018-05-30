@@ -1,0 +1,26 @@
+require 'asciidoctor' 
+
+ignore %r{^generated}
+guard :shell do 
+	watch(/^*\.adoc$/) do 
+		`asciidoctor -r asciidoctor-diagram adoc/index.adoc -D generated`
+		%x{cp -R adoc/fonts generated}
+		%x{cp -R adoc/style generated}
+		%x{cp -R adoc/images generated}
+		%x{cp -R adoc/scripts generated}
+
+		%x{osascript<<APPLESCRIPT
+			tell application "Google Chrome"
+			set windowList to every window
+			repeat with aWindow in windowList
+				set tabList to every tab of aWindow
+				repeat with atab in tabList
+					if (URL of atab contains "#{Dir.pwd}") then
+						reload atab
+					end if
+				end repeat
+			end repeat
+			end tell 
+			APPLESCRIPT}
+	end 
+end

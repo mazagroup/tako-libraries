@@ -1,0 +1,14 @@
+== Components
+
+Amdatu Blob Stores provides the following components:
+
+[cols="40%,10%,50%"]
+|===
+| Bundle
+	| Required
+	| Description
+| org.amdatu.blobstores
+	| yes
+	| Contains the BlobStoreService, and wraps jclouds including required dependencies
+|===
+

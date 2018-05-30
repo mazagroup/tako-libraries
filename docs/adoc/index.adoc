@@ -1,0 +1,20 @@
+:toc: left
+:toclevels: 3
+:toc-title: Amdatu Blobstores
+:homepage: https://www.amdatu.org/blobstores
+:source-highlighter: coderay
+:icons: font
+:docinfo: shared
+:imagesdir: images
+
+= Amdatu Blobstores
+
+include::_includes/intro.adoc[]
+
+include::_includes/how-to-use.adoc[]
+
+include::_includes/components.adoc[]
+
+include::_includes/dependencies.adoc[]
+
+include::_includes/resources.adoc[]

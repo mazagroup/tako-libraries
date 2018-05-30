@@ -1,0 +1,5 @@
+projectName: tako-deps
+baselineVersion: r1
+
+baselineRepoLocation: http://tako-repo.s3.amazonaws.com/${projectName}/${baselineVersion}/index.xml.gz
+#baselineRepoLocation: https://bitbucket.org/amdatu/amdatu-repository/raw/8e21c6a410ef7851b4896d1ce0333704170d2f13/staging/amdatu-blobstores-r6/index.xml.gz

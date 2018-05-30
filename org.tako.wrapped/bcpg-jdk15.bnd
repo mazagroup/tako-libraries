@@ -1,0 +1,15 @@
+Include-Resource: @jars/org.springframework.roo.wrapping.bcpg-jdk15-1.45.010.jar
+-exportcontents:  org	
+Export-Package: org.*;version=1.45.010
+Bundle-Version: 1.45.010.${tstamp}
+Import-Package: javax.crypto;resolution:=optional,\
+	javax.crypto.spec;resolution:=optional,\
+	org.bouncycastle.asn1;resolution:=optional,\
+	org.bouncycastle.jce.interfaces;resolution:=optional,\
+	org.bouncycastle.jce.provider;resolution:=optional,\
+	org.bouncycastle.jce.spec;resolution:=optional,\
+	org.bouncycastle.util;resolution:=optional,\
+	org.bouncycastle.util.encoders;resolution:=optional,\
+	org.bouncycastle.util.io;resolution:=optional
+	
+	

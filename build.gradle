@@ -1,0 +1,205 @@
+// Available to customize the build
+import aQute.bnd.osgi.Jar
+import com.github.mgk.gradle.*
+import java.text.SimpleDateFormat
+import java.util.zip.ZipEntry
+import java.util.zip.ZipFile
+import java.util.zip.ZipOutputStream
+import org.apache.tools.ant.filters.ReplaceTokens
+
+
+buildscript {
+  repositories {
+    jcenter()
+    mavenCentral()
+    maven {
+      url "https://plugins.gradle.org/m2/"
+    }
+  }
+  dependencies {
+    classpath "biz.aQute.bnd:biz.aQute.bnd.gradle:${bnd_version}"
+    classpath "gradle.plugin.com.github.mgk.gradle:s3:1.4.0"
+    classpath "gradle.plugin.nl.javadude.gradle.plugins:license-gradle-plugin:0.14.0"
+  }
+}
+
+subprojects {
+  if (file('bnd.bnd').exists()) {
+
+    apply plugin: "com.github.hierynomus.license"
+
+    /* Configure the license plugin options */
+    license {
+      header rootProject.file('etc/classheader_plain.txt')
+      excludes(["**/*.txt", "**/*.html", "packageinfo"])
+      skipExistingHeaders false
+    }
+
+    getTasksByName('licenseFormatMain', false).each {
+     it.outputs.upToDateWhen { false }
+    }
+    getTasksByName('licenseFormatTest', false).each {
+     it.outputs.upToDateWhen { false }
+    }
+  }
+}
+
+apply plugin: "com.github.mgk.gradle.s3"
+
+task processResources(type: Copy) {
+    def version = System.getenv("BITBUCKET_TAG")
+    if (version == null) {
+      version="snapshot"
+    }
+    def projectName = bndWorkspace.getProperty('projectName')
+    from('etc/') {
+        include 'latest.xml'
+        filter(ReplaceTokens, tokens: [
+            projectName: projectName,
+            releaseVersion: version
+          ])
+    }
+    into 'generated'
+}
+
+task s3SnapshotDeploy(dependsOn: ['snapshot', 'docs:asciidoctor']) {
+  doLast {
+    def projectName = bndWorkspace.getProperty('projectName')
+    logger.info "Deploying snapshot for $projectName"
+
+    def repoDir = getRepo("-snapshotrepo").getRoot()
+    s3UploadDir(projectName, "snapshot", "repo", repoDir)
+
+    def docsDir = file("docs/generated")
+    s3UploadDir(projectName, "snapshot", "docs", docsDir)
+  }
+}
+
+task s3ReleaseDeploy {
+  dependsOn getTasksByName('release', true), 'docs:asciidoctor', 'processResources'
+  doLast {
+    def version = System.getenv("BITBUCKET_TAG")
+    if (version == null) {
+      throw new GradleException("Failed to get version tag (env: BITBUCKET_TAG), git tag is required for release deployment");
+    }
+    def projectName = bndWorkspace.getProperty('projectName')
+    logger.info "Deploying release for ${projectName}/${version}"
+
+    def repoDir = getRepo("-releaserepo").getRoot()
+    s3UploadDir("${projectName}", "${version}", "repo", repoDir)
+
+    def docsDir = file("docs/generated")
+    s3UploadDir("${projectName}", "${version}", "docs", docsDir)
+
+    def latestRepoIndex = file("generated/latest.xml")
+    s3UploadFile("${projectName}", "latest.xml", latestRepoIndex)
+  }
+}
+
+task snapshot {
+  dependsOn getTasksByName('release', true)
+  doLast {
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+    String postfix = "DEV" + sdf.format(new Date(System.currentTimeMillis()));
+    def baselineRepo = getRepo('-baselinerepo')
+    def releaseRepo = getRepo('-releaserepo')
+    def snapshotRepo = getRepo('-snapshotrepo')
+    releaseRepo.list().each { bsn ->
+      def baselineJar = getBaselineJar(baselineRepo, bsn);
+      def baselineVersion = baselineJar != null ? new Jar(baselineJar).version : "0.0.0";
+      releaseRepo.get(bsn, 'latest').each {
+        def jar = new Jar(it)
+        def version = jar.getVersion();
+        if (baselineJar == null || !version.equals(baselineVersion)) {
+          logger.info "Dist including snapshot bundle bsn: '${bsn}' version: '${version}' (baseline version: '${baselineVersion}')"
+          def snapshotVersion = "${baselineVersion}.${postfix}";
+          def tmp = getBundleWithNewVersion(it, snapshotVersion)
+          new FileInputStream(tmp).withStream { stream -> snapshotRepo.put(stream, null) }
+        } else {
+          logger.info "Dist including released bundle bsn: '${bsn}' version: '${baselineVersion}'"
+          if (baselineJar == null) {
+            throw new GradleException("Project ${bsn} failed to update snapshot", e)
+          }
+          new FileInputStream(baselineJar).withStream { stream -> snapshotRepo.put(stream, null) }
+        }
+      }
+    }
+  }
+}
+
+def s3UploadDir(project, version, extra, dir) {
+    def projectName = bndWorkspace.getProperty('projectName')
+    fileTree(dir: dir).each { f ->
+      def path = dir.toPath().relativize(f.toPath())
+      def t = task "s3UploadDir-${path}"(type: S3Upload) {
+        bucket = "${tako_bucket}"
+        file = f
+        key = "${projectName}/${version}/${extra}/${path}"
+        overwrite = true
+      }
+      t.execute()
+    }
+}
+
+def s3UploadFile(project, name, fileToUpload) {
+    def projectName = bndWorkspace.getProperty('projectName')
+    def t = task "s3UploadDir-${path}"(type: S3Upload) {
+      bucket = "${tako_bucket}"
+      file = fileToUpload
+      key = "${projectName}/${name}"
+      overwrite = true
+    }
+    t.execute()
+}
+
+def getBaselineJar(baselineRepo, bsn) {
+  if(baselineRepo.versions(bsn).empty) {
+    return null;
+  }
+  def released = baselineRepo.get(bsn, 'latest')
+  if (released == null || released.length == 0) {
+    throw new GradleException("Released bundle not found bsn: '${bsn}' version: '${version}' ");
+  }
+  return released[0]
+}
+
+def getRepo(repoAttr) {
+  def repoName = bndWorkspace.getProperty(repoAttr);
+  def repos = bndWorkspace.getRepositories()
+  for (repo in repos) {
+    if (repo.name.equals(repoName)) {
+      return repo;
+    }
+  }
+  throw new GradleException("Repo not found, $repoAttr, $repoName, $repos");
+}
+
+def getBundleWithNewVersion(sourceJar, version) {
+  def zip = new ZipFile(sourceJar)
+  def zipTemp = File.createTempFile('out', '.jar')
+  zipTemp.deleteOnExit()
+  new ZipOutputStream(new FileOutputStream(zipTemp)).withStream { zos ->
+    for(e in zip.entries()) {
+      if(e.name.equals('META-INF/MANIFEST.MF')) {
+        zip.getInputStream(e).withStream { is ->
+          def br = new BufferedReader(new InputStreamReader(is, 'UTF-8'))
+          zos.putNextEntry(new ZipEntry('META-INF/MANIFEST.MF'))
+
+          def line;
+          while ((line = br.readLine())!=null) {
+            if (line.startsWith("Bundle-Version:")) {
+              zos << "Bundle-Version: $version\r\n".getBytes('UTF8');
+            } else {
+              zos << "$line\r\n".getBytes('UTF8')
+            }
+          }
+        }
+      } else {
+        zos.putNextEntry(e)
+        zip.getInputStream(e).withStream {is -> zos << is.bytes }
+      }
+      zos.closeEntry()
+    }
+  }
+  return zipTemp;
+}

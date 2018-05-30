@@ -1,0 +1,10 @@
+Include-Resource: @jars/org.springframework.roo.wrapping.json-simple-1.1.010.jar
+-exportcontents:  org	
+Export-Package: org.*;version=1.1.010
+Bundle-Version: 1.1.010.${tstamp}
+Import-Package: org.antlr.v4.runtime;version=4.7,\
+	org.antlr.v4.runtime.atn;version=4.7,\
+	org.antlr.v4.runtime.dfa;version=4.7,\
+	org.antlr.v4.runtime.misc;version=4.7,\
+	org.antlr.v4.runtime.tree;version=4.7,\
+	org.slf4j
