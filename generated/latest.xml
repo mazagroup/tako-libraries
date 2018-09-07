@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?> 
 <repository name='tako-deps latest' 
   xmlns='http://www.osgi.org/xmlns/repository/v1.0.0'> 
-  <referral url="http://amdatu-repo.s3.amazonaws.com/tako-deps/snapshot/repo/index.xml.gz" /> 
+  <referral url="http://amdatu-repo.s3.amazonaws.com/tako-deps/r1/repo/index.xml.gz" /> 
 </repository>
